@@ -60,7 +60,7 @@
 
     const data = ctx.getImageData(0, 0, cw, ch).data;
     const pts = [];
-    const step = 3; // sampling density
+    const step = window.innerWidth < 640 ? 5 : 3; // coarser sampling on mobile for performance
     const worldWidth = 16; // world units the name should span horizontally
     const worldHeight = worldWidth * (ch / cw);
     for (let y = 0; y < ch; y += step) {
@@ -90,16 +90,28 @@
     };
   }
 
+  const isSmallScreen = window.innerWidth < 640;
+
+  function fitCameraToContent() {
+    const targetWidth = 15.5;   // world units the name should comfortably fit within
+    const targetHeight = 7.5;
+    const vFOV = (camera.fov * Math.PI) / 180;
+    const aspect = window.innerWidth / window.innerHeight;
+    const distForWidth = targetWidth / (2 * Math.tan(vFOV / 2) * aspect);
+    const distForHeight = targetHeight / (2 * Math.tan(vFOV / 2));
+    camera.position.z = Math.max(distForWidth, distForHeight, 9);
+  }
+
   function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 11);
+    fitCameraToContent();
 
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: !isSmallScreen, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmallScreen ? 1.75 : 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // ---- sample letterforms ----
+    // ---- sample letterforms (coarser sampling on small screens for smooth performance) ----
     const rawPts = sampleTextPoints(NAME, 6000);
     particleCount = rawPts.length;
 
@@ -156,7 +168,7 @@
     scene.add(points);
 
     // ---- extra embers that fly out and fade for the "burst" flourish ----
-    const sparkCount = 260;
+    const sparkCount = isSmallScreen ? 140 : 260;
     const sparkGeo = new THREE.BufferGeometry();
     const sparkPos = new Float32Array(sparkCount * 3);
     const sparkVel = [];
@@ -181,7 +193,9 @@
     scene.add(sparks);
 
     window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
     window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     if (replayBtn) replayBtn.addEventListener("click", restart);
 
     clockStart = performance.now();
@@ -207,6 +221,7 @@
 
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
+    fitCameraToContent();
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
@@ -214,6 +229,13 @@
   function onPointerMove(e) {
     mouseX = (e.clientX / window.innerWidth - 0.5);
     mouseY = (e.clientY / window.innerHeight - 0.5);
+  }
+
+  function onTouchMove(e) {
+    if (!e.touches || !e.touches.length) return;
+    const t = e.touches[0];
+    mouseX = (t.clientX / window.innerWidth - 0.5);
+    mouseY = (t.clientY / window.innerHeight - 0.5);
   }
 
   function restart() {

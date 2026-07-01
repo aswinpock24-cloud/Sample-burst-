@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>A little quiz — for Aamina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .quiz-shell {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: clamp(6.5rem, 12vw, 8rem) 1.25rem 5rem;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quiz-eyebrow {
+    font-family: var(--font-utility);
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent-rose);
+    text-align: center;
+    margin-bottom: 0.6rem;
+  }
+
+  .quiz-heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 6vw, 2.3rem);
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+  .quiz-heading em { color: var(--accent-gold); font-style: italic; }
+
+  /* ---- progress dots ---- */
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2.2rem;
+  }
+  .progress .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--rule);
+    transition: background 0.35s ease, transform 0.35s ease;
+  }
+  .progress .dot.done { background: var(--accent-gold); }
+  .progress .dot.current { background: var(--accent-rose); transform: scale(1.4); }
+
+  /* ---- card stage ---- */
+  .stage {
+    position: relative;
+    flex: 1;
+    min-height: 340px;
+    touch-action: pan-y;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, var(--bg-panel), var(--bg-panel-soft));
+    border: 1px solid var(--rule);
+    border-radius: 22px;
+    padding: 2rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    opacity: 0;
+    transform: translateX(40px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.22,.61,.36,1);
+  }
+  .card.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+  }
+  .card.exit-left {
+    opacity: 0;
+    transform: translateX(-50px) scale(0.97);
+  }
+
+  .card .q-label {
+    font-family: var(--font-utility);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.9rem;
+  }
+
+  .card .q-text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 5vw, 1.55rem);
+    line-height: 1.4;
+    color: var(--text-cream);
+    margin-bottom: 1.6rem;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: auto;
+  }
+
+  .option {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    text-align: left;
+    color: var(--text-cream);
+    background: rgba(212, 175, 122, 0.05);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 0.95rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .option:hover { border-color: var(--accent-gold); background: rgba(212, 175, 122, 0.1); }
+  .option:active { transform: scale(0.98); }
+  .option.picked {
+    border-color: var(--accent-gold);
+    background: linear-gradient(135deg, rgba(212,175,122,0.22), rgba(199,107,138,0.18));
+  }
+
+  .swipe-hint {
+    text-align: center;
+    font-family: var(--font-utility);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.5;
+    margin-top: 1.2rem;
+  }
+
+  /* ---- result ---- */
+  .result {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .result.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .result .score-ring {
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.6rem;
+    background: conic-gradient(var(--accent-gold) 0turn, var(--accent-gold) var(--score, 1turn), rgba(255,255,255,0.06) var(--score, 1turn));
+    position: relative;
+  }
+  .result .score-ring::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+  }
+  .result .score-num {
+    position: relative;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.9rem;
+    color: var(--accent-gold-soft);
+  }
+
+  .result .result-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 6vw, 2.1rem);
+    color: var(--text-cream);
+    margin-bottom: 0.8rem;
+  }
+  .result .result-title em { color: var(--accent-rose); font-style: italic; }
+
+  .result .result-copy {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 380px;
+    margin-bottom: 2rem;
+  }
+
+  /* confetti canvas layer */
+  #confetti-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .result { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Aamina</a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="quotes.html">Quotes</a>
+    <a href="quiz.html" class="active">Quiz</a>
+  </div>
+</nav>
+
+<main class="quiz-shell">
+  <div class="quiz-eyebrow">just for fun</div>
+  <h1 class="quiz-heading">A little <em>quiz</em><br>for you</h1>
+
+  <div class="progress" id="progress"></div>
+
+  <div class="stage" id="stage">
+    <!-- cards injected by JS -->
+    <div class="result" id="result">
+      <div class="score-ring" id="scoreRing"><span class="score-num" id="scoreNum">100%</span></div>
+      <div class="result-title">Verdict: <em>utterly wonderful</em></div>
+      <p class="result-copy" id="resultCopy"></p>
+      <a class="btn primary" href="about.html" style="display:inline-block;">Read her story →</a>
+    </div>
+  </div>
+
+  <div class="swipe-hint" id="swipeHint">swipe or tap an answer →</div>
+</main>
+
+<footer class="site-footer">made with care, for Aamina</footer>
+
+<script>
+(function () {
+  const QUESTIONS = [
+    {
+      label: "Question 01",
+      text: "Pick the vibe of a perfect evening:",
+      options: ["Cozy blanket + good food", "Music turned up, dancing in the kitchen", "A long walk, talking about everything", "Doing absolutely nothing, together"]
+    },
+    {
+      label: "Question 02",
+      text: "Best kind of surprise?",
+      options: ["A handwritten note", "Your favorite snack, just because", "An unplanned adventure", "Someone remembering the small stuff"]
+    },
+    {
+      label: "Question 03",
+      text: "How do you like to be appreciated?",
+      options: ["Words, said plainly", "Time, given fully", "Little thoughtful gestures", "All of it, honestly"]
+    },
+    {
+      label: "Question 04",
+      text: "Pick a season that feels like you:",
+      options: ["Golden autumn light", "Bright, warm summer", "Quiet, snowy winter", "Fresh spring mornings"]
+    },
+    {
+      label: "Question 05",
+      text: "Last one — what matters most?",
+      options: ["Being understood", "Being laughed with", "Being chosen, again and again", "All three, always"]
+    }
+  ];
+
+  const stage = document.getElementById("stage");
+  const progressEl = document.getElementById("progress");
+  const resultEl = document.getElementById("result");
+  const swipeHint = document.getElementById("swipeHint");
+  const resultCopy = document.getElementById("resultCopy");
+  const scoreRing = document.getElementById("scoreRing");
+
+  let current = 0;
+  const cards = [];
+
+  // build progress dots
+  QUESTIONS.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "dot" + (i === 0 ? " current" : "");
+    progressEl.appendChild(d);
+  });
+
+  // build cards
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement("div");
+    card.className = "card" + (i === 0 ? " active" : "");
+    card.innerHTML = `
+      <div class="q-label">${q.label} / ${String(QUESTIONS.length).padStart(2, "0")}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options">
+        ${q.options.map((o, oi) => `<button type="button" class="option" data-idx="${oi}">${o}</button>`).join("")}
+      </div>
+    `;
+    stage.insertBefore(card, resultEl);
+    cards.push(card);
+
+    card.querySelectorAll(".option").forEach(btn => {
+      btn.addEventListener("click", () => selectOption(card, btn, i));
+    });
+
+    // basic touch swipe support
+    let startX = null;
+    card.addEventListener("touchstart", e => { startX = e.touches[0].clientX; }, { passive: true });
+    card.addEventListener("touchend", e => {
+      if (startX === null) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 60 && card.querySelector(".option.picked")) {
+        advance(i);
+      }
+      startX = null;
+    }, { passive: true });
+  });
+
+  function selectOption(card, btn, idx) {
+    card.querySelectorAll(".option").forEach(o => o.classList.remove("picked"));
+    btn.classList.add("picked");
+    setTimeout(() => advance(idx), 380);
+  }
+
+  function advance(idx) {
+    const dots = progressEl.querySelectorAll(".dot");
+    dots[idx].classList.remove("current");
+    dots[idx].classList.add("done");
+
+    cards[idx].classList.add("exit-left");
+    cards[idx].classList.remove("active");
+
+    if (idx + 1 < cards.length) {
+      dots[idx + 1].classList.add("current");
+      cards[idx + 1].classList.add("active");
+      current = idx + 1;
+    } else {
+      swipeHint.style.display = "none";
+      showResult();
+    }
+  }
+
+  function showResult() {
+    const messages = [
+      "Every answer just confirmed it: you know exactly what you value, and you're not shy about it. That's rare — and it's one of the most attractive things about you.",
+      "Turns out the quiz was never really about scoring anything. It was just an excuse to say this: you make ordinary things feel a little more golden.",
+      "There's no wrong answer here, because the real point was always you — however you showed up to it."
+    ];
+    resultCopy.textContent = messages[Math.floor(Math.random() * messages.length)];
+    resultEl.classList.add("show");
+    scoreRing.style.setProperty("--score", "1turn");
+    launchConfetti();
+  }
+
+  /* ---------- lightweight confetti burst ---------- */
+  function launchConfetti() {
+    const canvas = document.getElementById("confetti-canvas");
+    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = canvas.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize() {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const colors = ["#d4af7a", "#e8cfa0", "#c76b8a", "#f3e9df"];
+    const count = window.innerWidth < 640 ? 70 : 130;
+    const particles = Array.from({ length: count }, () => ({
+      x: window.innerWidth / 2 + (Math.random() - 0.5) * 60,
+      y: window.innerHeight * 0.32,
+      vx: (Math.random() - 0.5) * 9,
+      vy: -Math.random() * 9 - 3,
+      size: 3 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.3,
+      life: 1
+    }));
+
+    let raf;
+    const gravity = 0.22;
+    function tick() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      let alive = false;
+      particles.forEach(p => {
+        p.vy += gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 0.006;
+        if (p.life > 0) {
+          alive = true;
+          ctx.save();
+          ctx.globalAlpha = Math.max(p.life, 0);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      });
+      if (alive) raf = requestAnimationFrame(tick);
+      else ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+    tick();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,10 +1,13 @@
 # For Aamina 💛
 
-A tiny 3-page romantic website:
+A tiny romantic website with 4 pages:
 
 - **index.html** — home page with a 3D particle "burst" animation that reassembles into the name *Aamina*
 - **about.html** — a written page about her
 - **quotes.html** — a curated set of quotes
+- **quiz.html** — a playful swipeable quiz with a progress bar and an animated confetti reveal at the end
+
+Fully responsive — tuned for phones (portrait & landscape), tablets, and desktop. Respects `prefers-reduced-motion` throughout.
 
 Built with plain HTML/CSS/JS + [Three.js](https://threejs.org/) (loaded from a CDN, no build step needed).
 
@@ -25,6 +28,7 @@ python3 -m http.server 8000
    - `index.html`
    - `about.html`
    - `quotes.html`
+   - `quiz.html`
    - `style.css`
    - `script.js`
    - `README.md` (optional)

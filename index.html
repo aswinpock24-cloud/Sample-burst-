@@ -13,11 +13,13 @@
   .hero {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100vh;   /* fallback for older browsers */
+    height: 100svh;  /* accounts for mobile browser toolbars */
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: pan-y;
   }
   #burst-canvas {
     position: absolute;
@@ -123,6 +125,38 @@
   @media (prefers-reduced-motion: reduce) {
     .hero-copy { opacity: 1 !important; }
   }
+
+  /* ---------- Mobile tuning ---------- */
+  @media (max-width: 480px) {
+    .hero-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      margin-bottom: clamp(5rem, 26vh, 8rem);
+    }
+    .hero-tagline {
+      margin-top: clamp(5rem, 26vh, 8rem);
+      font-size: 1.02rem;
+      padding: 0 1.2rem;
+    }
+    .hero-actions {
+      flex-direction: column;
+      width: 100%;
+      padding: 0 2rem;
+      margin-top: 2rem;
+      gap: 0.9rem;
+    }
+    .btn {
+      width: 100%;
+      text-align: center;
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  @media (max-height: 560px) and (orientation: landscape) {
+    .hero-eyebrow { margin-bottom: 3.2rem; }
+    .hero-tagline { margin-top: 3.2rem; font-size: 0.9rem; }
+    .hero-actions { margin-top: 1.4rem; }
+  }
 </style>
 </head>
 <body>
@@ -133,6 +167,7 @@
     <a href="index.html" class="active">Home</a>
     <a href="about.html">About</a>
     <a href="quotes.html">Quotes</a>
+    <a href="quiz.html">Quiz</a>
   </div>
 </nav>
 
