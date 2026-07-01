@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For Aamina</title>
+<meta name="description" content="A little corner of the internet, made for Aamina." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #burst-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .hero-copy {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+  .hero-copy.show { opacity: 1; }
+
+  .hero-name-fallback {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(3.2rem, 14vw, 8rem);
+    letter-spacing: 0.01em;
+    color: var(--text-cream);
+    line-height: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-utility);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-rose);
+    margin-bottom: clamp(6rem, 22vh, 11rem);
+  }
+
+  .hero-tagline {
+    margin-top: clamp(6rem, 24vh, 12rem);
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  .hero-actions {
+    pointer-events: auto;
+    margin-top: 2.4rem;
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: var(--font-utility);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.9rem 1.7rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--text-cream);
+    transition: border-color 0.35s ease, color 0.35s ease, background 0.35s ease;
+    backdrop-filter: blur(2px);
+  }
+  .btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold-soft);
+    background: rgba(212, 175, 122, 0.06);
+  }
+  .btn.primary {
+    border-color: var(--accent-gold);
+    color: var(--bg-deep);
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-soft));
+  }
+  .btn.primary:hover {
+    color: var(--bg-deep);
+    filter: brightness(1.08);
+  }
+
+  .replay {
+    position: absolute;
+    bottom: clamp(1.5rem, 4vh, 2.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    font-family: var(--font-utility);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 1s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+  }
+  .replay.show { opacity: 0.55; }
+  .replay:hover { opacity: 1; color: var(--accent-gold-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-copy { opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Aamina</a>
+  <div class="links">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="quotes.html">Quotes</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas id="burst-canvas" aria-hidden="true"></canvas>
+
+  <div class="hero-copy" id="hero-copy">
+    <div class="hero-eyebrow">a small corner of the internet for</div>
+    <!-- Fallback name shown instantly for no-JS / reduced-motion visitors -->
+    <noscript><div class="hero-name-fallback">Aamina</div></noscript>
+    <p class="hero-tagline">every line of this was written with you in mind.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="about.html">Read her story</a>
+      <a class="btn" href="quotes.html">Some pretty words</a>
+    </div>
+  </div>
+
+  <button class="replay" id="replay-btn" type="button">↻ Replay</button>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

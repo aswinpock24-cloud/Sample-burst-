@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About Aamina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Aamina</a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="quotes.html">Quotes</a>
+  </div>
+</nav>
+
+<main class="page">
+  <span class="eyebrow">a few honest words</span>
+  <h1 class="page-title">On the subject<br>of <em>Aamina</em></h1>
+  <div class="rule"></div>
+
+  <p class="lede">Some people fill a room. Aamina fills the quiet moments too.</p>
+
+  <div class="body-copy">
+    <p class="reveal">There's a particular kind of warmth that doesn't announce itself — it just settles into a room, into a conversation, into an ordinary Tuesday, and makes it worth remembering. That's the closest I can get to describing her.</p>
+
+    <p class="reveal">She has a way of listening that makes you feel like the only person in the world worth hearing. A laugh that arrives suddenly and completely, like it's been waiting for permission. A kind of patience with the world — and with the people in it — that seems, some days, almost unfair to the rest of us.</p>
+
+    <p class="reveal">This page won't do her justice. No page could. But it's here anyway, because some things are worth saying even imperfectly: that she is thought of often, appreciated more than she probably realizes, and loved — plainly, steadily, without conditions attached.</p>
+
+    <p class="reveal">If you're reading this, Aamina — this whole small corner of the internet was built with exactly one person in mind. It's you. It was always going to be you.</p>
+  </div>
+</main>
+
+<footer class="site-footer">made with care, for Aamina</footer>
+
+<script>
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    setTimeout(() => el.classList.add("is-visible"), 550 + i * 180);
+  });
+</script>
+</body>
+</html>

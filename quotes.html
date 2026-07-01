@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quotes for Aamina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="index.html" class="brand">Aamina</a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="quotes.html" class="active">Quotes</a>
+  </div>
+</nav>
+
+<main class="page">
+  <span class="eyebrow">words borrowed, feelings not</span>
+  <h1 class="page-title">Some pretty<br><em>words</em></h1>
+  <div class="rule"></div>
+  <p class="lede">None of these say it better than I'd like — but every one of them made me think of you.</p>
+
+  <ul class="quote-list">
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>You are my today and all of my tomorrows.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>In a sea of people, my eyes will always search for you.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Together is a wonderful place to be.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Stars can't shine without darkness.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Be the reason someone believes in the goodness of people.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Life is short, and it's up to you to make it sweet.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Simplicity is the ultimate sophistication.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+    <li class="quote-item reveal">
+      <blockquote><span class="quote-mark">&ldquo;</span>Every moment is a fresh beginning.<span class="quote-mark">&rdquo;</span></blockquote>
+    </li>
+  </ul>
+</main>
+
+<footer class="site-footer">made with care, for Aamina</footer>
+
+<script>
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    setTimeout(() => el.classList.add("is-visible"), 500 + i * 150);
+  });
+</script>
+</body>
+</html>
