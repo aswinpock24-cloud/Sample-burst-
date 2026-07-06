@@ -1,4 +1,4 @@
-# For Aamina 💛
+# For loved one
 
 A tiny romantic website with 4 pages:
 
@@ -39,7 +39,7 @@ python3 -m http.server 8000
    ```bash
    git init
    git add .
-   git commit -m "for Aamina"
+   git commit -m "for Aswin"
    git branch -M main
    git remote add origin https://github.com/<your-username>/for-aamina.git
    git push -u origin main
@@ -52,7 +52,7 @@ python3 -m http.server 8000
 
 4. Wait about a minute, then your site will be live at:
    ```
-   https://<your-username>.github.io/for-aamina/
+   https://<your-username>.github.io/for/
    ```
    GitHub shows the exact link at the top of the Pages settings once it's ready.
 
